@@ -1,0 +1,3 @@
+[submodule "ms-compression"]
+	path = ms-compression
+	url = git@github.com:coderforlife/ms-compress.git
