@@ -48,6 +48,7 @@ static int write_all(const TCHAR* filepath, bytes b, size_t size)
 	FILE* f = _tfopen(filepath, _T("wb"));
 	if (f == NULL) { /* error! */ return 0; }
 	while ((l = fwrite(b, sizeof(byte), size, f)) > 0 && (size-=l) > 0) { b += l; }
+	fflush(f);
 	fclose(f);
 	if (size > 0) { /* error! */ return 0; }
 	return 1;
@@ -59,6 +60,7 @@ static int append_all(const TCHAR* filepath, bytes b, size_t size)
 	FILE* f = _tfopen(filepath, _T("ab"));
 	if (f == NULL) { /* error! */ return 0; }
 	while ((l = fwrite(b, sizeof(byte), size, f)) > 0 && (size-=l) > 0) { b += l; }
+	fflush(f);
 	fclose(f);
 	if (size > 0) { /* error! */ return 0; }
 	return 1;
@@ -114,6 +116,8 @@ static int bm_decomp(const TCHAR* in_file, const TCHAR* out_file)
 	if ((out_size = decompress(get_format(bm_data), ((bytes)bm_data) + bm_data->offset, bm_data->compressed_size, out, bm_data->uncompressed_size)) != bm_data->uncompressed_size) { /* error! */ _ftprintf(stderr, _T("Failed to decompress data: %u\n"), errno); return -4; }
 	if (!write_all(out_file, out, out_size)) { /* error! */ _ftprintf(stderr, _T("Failed to save decompressed file to '%s'\n"), out_file); return -5; }
 
+	// TODO: free()
+
 	return 0;
 }
 
@@ -134,6 +138,8 @@ static int bm_comp(const TCHAR* in_file, const TCHAR* out_file)
 	out_data[out_size++] = 0;
 	if (!write_all(out_file, out, ((bytes)bm_data) + bm_data->offset - out)) { /* error! */ _ftprintf(stderr, _T("Failed to save compressed file to '%s'\n"), out_file); return -5; }
 	if (!append_all(out_file, out_data, out_size)) { /* error! */ _ftprintf(stderr, _T("Failed to save compressed file to '%s'\n"), out_file); return -5; }
+	
+	// TODO: free()
 
 	return 0;
 }

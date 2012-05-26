@@ -19,6 +19,10 @@
 // Modified from PEDataTypes.h, PEFile.cpp, PEVersion.h, and PEVersion.cpp in pe-file project: https://github.com/coderforlife/pe-file/
 // Only reads the version resource from the mini PE file in the bootmgr
 
+#ifdef _MSC_VER
+#pragma warning(disable : 4201 4480) // nonstandard extension used: [nameless struct/union | specifying underlying type for enum]
+#endif
+
 #if defined(_MSC_VER) && _MSC_VER <= 1500
 typedef unsigned __int8 uint8_t;
 typedef unsigned __int16 uint16_t;
